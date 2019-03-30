@@ -11,6 +11,7 @@ body {
 }
 
 .wrap > .container {
+    min-height: 100%;
     padding: 70px 15px 20px;
 }
 
@@ -119,6 +120,7 @@ a.desc:after {
     outline: none;
 }
 
-.task-list {
-    margin-top: 130px;
+.test {
+    color: red;
 }
+

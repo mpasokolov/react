@@ -1,0 +1,21 @@
+.messages-block
+  display: flex
+  flex-direction: column
+  &__message-field
+    height: 50vh
+    overflow: scroll
+    padding: 0 20px 20px
+    align-self: flex-start
+    display: flex
+    flex-direction: column
+    width: 100%
+    margin: auto
+  &__input-field
+    align-self: flex-end
+
+.message
+  &_bot
+    align-self: flex-start
+  &_my
+    align-self: flex-end
+    font-weight: bold
