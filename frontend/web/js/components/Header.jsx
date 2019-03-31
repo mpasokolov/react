@@ -18,9 +18,9 @@ class Header extends React.Component{
                 <div className='header__chat-name'> { this.props.chats[this.props.chatId].name } </div>
                 <div className='header__message-count'>
                     Messages: {
-                        typeof(this.props.messages[this.props.chatId]) !== 'undefined' ?
-                            this.props.messages[this.props.chatId].length:
-                            0
+                        typeof(this.props.messages[this.props.chatId]) !== 'undefined'
+                            ? this.props.messages[this.props.chatId].length
+                            : 0
                     }
                 </div>
             </div>

@@ -9,11 +9,11 @@ export default class Layout extends React.Component{
 
     static propTypes = {
         chatId: PropTypes.string,
-        initStore: PropTypes.func,
     };
 
     render() {
         const chatId = this.props.chatId ? this.props.chatId : '1';
+        console.log(chatId);
         return (
             <div className='layout'>
                 <div className='layout__left-side'>
