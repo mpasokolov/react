@@ -10,12 +10,22 @@
     flex-direction: column
     width: 100%
     margin: auto
-  &__input-field
-    align-self: flex-end
 
 .message
+  display: flex
+  flex-direction: column
   &_bot
     align-self: flex-start
   &_my
     align-self: flex-end
+  &__name
+    font-size: 12px
+    color: rgba(0, 0, 0, 0.54)
     font-weight: bold
+    &_bot
+      align-self: flex-start
+    &_my
+      align-self: flex-end
+  &__text
+    font-weight: 500
+

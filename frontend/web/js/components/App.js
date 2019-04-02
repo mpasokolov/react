@@ -8,6 +8,7 @@ export default class App extends React.Component {
             <Switch>
                 <Route exact path='/' component={ Layout } />
                 <Route exact path='/chats/:id/' render={ obj => <Layout chatId={ obj.match.params.id } /> } />
+                <Route exact path='/profile/' render={ () => <Layout profile={true } /> } />
             </Switch>
         );
     }
