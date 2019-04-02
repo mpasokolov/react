@@ -31,7 +31,6 @@ class MessageField extends React.Component {
     };
     
     componentDidUpdate(prevProps) {
-        this.scrollToBottom();
         const { messages, chatId } = this.props;
         const chatMessages = messages[chatId];
         if (chatMessages) {
@@ -44,6 +43,7 @@ class MessageField extends React.Component {
                 setTimeout(this.handleReply, 100);
             }
         }
+        this.scrollToBottom();
     }
 
     componentDidMount() {
@@ -83,8 +83,11 @@ class MessageField extends React.Component {
 
         return (
             <div className='messages-block'>
-                <div className="messages-block__message-field" ref={(el) => {this.messagesEnd = el;}}>
-                    { messageComponents }
+                <div className="messages-block__container" style={{clear: 'both' }}>
+                    <div className="messages-block__message-field">
+                        { messageComponents }
+                        <div className="scroll" ref={(el) => {this.messagesEnd = el;}}></div>
+                    </div>
                 </div>
                 <div className='messages-block__input-field' style={{ textAlign: 'center' }}>
                     <TextField
