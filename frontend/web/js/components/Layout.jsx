@@ -14,7 +14,6 @@ export default class Layout extends React.Component{
     };
 
     render() {
-        this.props.profile ? console.log('has') : console.log('not have');
         const chatId = this.props.chatId ? this.props.chatId : '1';
         return (
             <div className='layout'>

@@ -8,7 +8,7 @@ import Subheader from 'material-ui/Subheader';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import PropTypes from 'prop-types';
 import {bindActionCreators} from 'redux';
-import { createChat } from '../actions/chatsActions';
+import { createChat, loadChats } from '../actions/chatsActions';
 import connect from 'react-redux/es/connect/connect';
 import TextField from 'material-ui/TextField';
 import '../../css/chatList.sass';
@@ -19,6 +19,9 @@ class ChatList extends React.Component{
         chatsList: PropTypes.object,
         push: PropTypes.func.isRequired,
         createChat: PropTypes.func.isRequired,
+        loadChats: PropTypes.func.isRequired,
+        isLoading: PropTypes.bool,
+        isLiteChat: PropTypes.string
     };
 
     constructor(props) {
@@ -27,6 +30,10 @@ class ChatList extends React.Component{
             name: '',
             isHidden: false
         };
+    }
+
+    componentDidMount() {
+        this.props.loadChats();
     }
 
     handleLink = (link) => {
@@ -41,7 +48,8 @@ class ChatList extends React.Component{
 
     handleAddChat = () => {
         if (this.state.name.length > 0) {
-            this.props.createChat(this.state.name);
+            const data = {name: this.state.name, admin: 1};
+            this.props.createChat(data);
             this.setState({name: ''});
             this.handleViewInputField();
         }
@@ -56,14 +64,29 @@ class ChatList extends React.Component{
     };
 
     render() {
+        if (this.props.isLoading) {
+            return '';
+        }
+
+        //console.log('is lite = ' + this.props.isLiteChat);
+        //console.log('type = ' + typeof(this.props.isLiteChat);
+
+
         let chatListComponents = [];
         for (let key in this.props.chatsList) {
             chatListComponents.push(
                 <ListItem
-                    key={ key }
+                    key={ this.props.chatsList[key].id }
                     primaryText={ this.props.chatsList[key].name}
                     rightIcon={ <CommunicationChatBubble/> }
-                    onClick={ () => this.handleLink(`/chats/${key}/`) }
+                    onClick={ () => this.handleLink(`/chats/${this.props.chatsList[key].id}/`) }
+                    style={
+                        {
+                            backgroundColor: this.props.isLiteChat.length > 0 && key === this.props.isLiteChat
+                                ? '#aaa8a8'
+                                : 'white'
+                        }
+                    }
                 />
             );
         }
@@ -75,6 +98,7 @@ class ChatList extends React.Component{
                         <Subheader>Recent chats</Subheader>
                         { chatListComponents }
                         <ListItem
+                            key = 'addChat'
                             primaryText = 'Добавить чат'
                             leftIcon = { <AddIcon /> }
                             onClick = { this.handleViewInputField }
@@ -101,8 +125,10 @@ class ChatList extends React.Component{
 
 const mapStateToProps = ({ chatsReducer }) => ({
     chatsList: chatsReducer.chatsList,
+    isLoading: chatsReducer.isLoading,
+    isLiteChat: chatsReducer.isLiteChat
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators({ createChat, push }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ createChat, loadChats,  push }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChatList);

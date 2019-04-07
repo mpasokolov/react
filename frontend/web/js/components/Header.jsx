@@ -13,8 +13,8 @@ class Header extends React.Component{
     static propTypes = {
         chatId: PropTypes.string,
         chats: PropTypes.object,
-        messages: PropTypes.object,
         push: PropTypes.func.isRequired,
+        isLoading: PropTypes.bool
     };
 
     handleLink = (link) => {
@@ -22,15 +22,23 @@ class Header extends React.Component{
     };
 
     render() {
+        if (this.props.isLoading) {
+            return '';
+        }
+
         return (
             <div className='header'>
                 <div className='header__chat-name'>
-                    { this.props.chats[this.props.chatId].name }
+                    {
+                        typeof(this.props.chats[this.props.chatId]) !== 'undefined'
+                            ? this.props.chats[this.props.chatId].name
+                            : 'Идет загрузка'
+                    }
                 </div>
                 <div className='header__message-count'>
                     Messages: {
-                        typeof(this.props.messages[this.props.chatId]) !== 'undefined'
-                            ? this.props.messages[this.props.chatId].length
+                        typeof(this.props.chats[this.props.chatId]) !== 'undefined'
+                            ? this.props.chats[this.props.chatId].messages.length
                             : 0
                     }
                 </div>
@@ -45,9 +53,9 @@ class Header extends React.Component{
     }
 }
 
-const mapStateToProps = ({ messageReducer, chatsReducer }) => ({
-    messages: messageReducer.messages,
-    chats: chatsReducer.chatsList
+const mapStateToProps = ({chatsReducer }) => ({
+    chats: chatsReducer.chatsList,
+    isLoading: chatsReducer.isLoading
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({ push }, dispatch);

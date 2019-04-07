@@ -8,9 +8,20 @@
 
 namespace common\models;
 
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
 class Messages extends ActiveRecord
 {
+    public function behaviors() {
+        return [
+            TimestampBehavior::class,
+        ];
+    }
 
+    public function rules() {
+        return [
+            [['author', 'text', 'chat'], 'safe'],
+        ];
+    }
 }

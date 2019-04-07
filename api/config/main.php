@@ -23,6 +23,7 @@ return [
         'request' => [
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
+                'asArray' => false
             ],
             'baseUrl'=>'/api',
             'cookieValidationKey' => $params['cookieValidationKey'],
@@ -48,7 +49,7 @@ return [
             'rules' => [
                 [
                     'class' => \yii\rest\UrlRule::class,
-                    'controller' => ['v1/tasks'],
+                    'controller' => ['v1/chats', 'v1/messages'],
                 ]
             ],
         ]

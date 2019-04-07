@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Chats;
 use common\models\Tasks;
 use common\models\User;
 use common\models\UsersTeams;
@@ -136,9 +137,9 @@ class SiteController extends Controller {
     }
 
     public function actionTest() {
-        \Yii::$app -> cache ->flush();
-        $query = new AuthorRule();
-
-        return $this ->render('test', ['key' => $query]);
+        $query = Chats::find()
+            -> joinWith('messages')
+            -> asArray() -> all();
+        return $this ->render('test', ['key' => $query[0]['messages']]);
     }
 }

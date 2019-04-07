@@ -52,9 +52,6 @@ return [
             'scriptUrl' => 'index.php',
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'rules' => [
-                ['class' => UrlRule::class, 'controller' => ['tasks-api'], 'pluralize' => false],
-            ],
         ],
         'authManager' => [
             'class' => yii\rbac\DbManager::class

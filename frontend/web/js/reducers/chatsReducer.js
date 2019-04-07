@@ -1,22 +1,52 @@
 import update from 'react-addons-update';
-import { CREATE_CHAT } from '../actions/chatsActions';
+import {SUCCESS_CHATS_LOADING, SUCCESS_CHAT_UPLOADING, SUCCESS_MESSAGE_UPLOADING, LITE_ON_CHAT, LITE_OFF_CHAT} from '../actions/chatsActions';
+
 
 const initialStore = {
-    chatsList: {
-        1: {name: 'Chat #1'},
-        2: {name: 'Chat #2'},
-        3: {name: 'Chat #3'},
-    },
-    chatCount: 3
+    chatsList: {},
+    isLoading: true,
+    isLiteChat: '',
 };
 
 export default function chatsReducer(store = initialStore, action) {
     switch (action.type) {
-    case CREATE_CHAT: {
-        store.chatCount = store.chatCount + 1;
-        const newChatsList = {...store.chatsList, [store.chatCount]: {name: action.text}};
+    case SUCCESS_CHATS_LOADING: {
         return update(store, {
-            chatsList: { $set: newChatsList },
+            chatsList: { $set: action.payload.entities.chats },
+            isLoading: { $set: false }
+        });
+    }
+    case SUCCESS_CHAT_UPLOADING: {
+        const newChat = action.payload;
+        newChat.messages = [];
+        const newChatsList = {...store.chatsList, [action.payload.id]: newChat};
+        return update(store, {
+            chatsList: { $set: newChatsList},
+        });
+    }
+    case SUCCESS_MESSAGE_UPLOADING: {
+        const chatId = action.payload.chat;
+        return update(store, {
+            chatsList: { $merge: { [chatId]: {
+                id: store.chatsList[chatId].id,
+                admin: store.chatsList[chatId].admin,
+                name: store.chatsList[chatId].name,
+                messages: [...store.chatsList[chatId].messages, {
+                    text: action.payload.text,
+                    author: action.payload.author,
+                    chat: action.payload.chatId
+                }]
+            } } },
+        });
+    }
+    case LITE_ON_CHAT: {
+        return update(store, {
+            isLiteChat: {$set: action.chatId}
+        });
+    }
+    case LITE_OFF_CHAT: {
+        return update(store, {
+            isLiteChat: {$set: ''}
         });
     }
     default:

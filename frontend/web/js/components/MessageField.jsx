@@ -6,17 +6,16 @@ import TextField from 'material-ui/TextField';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import SendIcon from 'material-ui/svg-icons/content/send';
 import Message from './Message';
-import { sendMessage, replyMessage, initStore } from '../actions/messageActions';
+import { createMessage } from '../actions/chatsActions';
 import '../../css/messages.sass';
 
 class MessageField extends React.Component {
 
     static propTypes = {
         chatId: PropTypes.string,
-        messages: PropTypes.object,
-        sendMessage: PropTypes.func.isRequired,
-        replyMessage: PropTypes.func.isRequired,
-        initStore: PropTypes.func
+        chatsList: PropTypes.object,
+        createMessage: PropTypes.func.isRequired,
+        isLoading: PropTypes.bool
     };
 
     constructor(props) {
@@ -30,33 +29,14 @@ class MessageField extends React.Component {
         this.messagesEnd.scrollIntoView({ behavior: 'smooth' });
     };
     
-    componentDidUpdate(prevProps) {
-        const { messages, chatId } = this.props;
-        const chatMessages = messages[chatId];
-        if (chatMessages) {
-            const lastMessageSender = chatMessages && chatMessages[chatMessages.length - 1] ?
-                chatMessages[chatMessages.length - 1].sender :
-                '';
-            if (!prevProps.messages[chatId]) {
-                setTimeout(this.handleReply, 100);
-            } else if (prevProps.messages[chatId].length < chatMessages.length  && lastMessageSender === 'me') {
-                setTimeout(this.handleReply, 100);
-            }
-        }
-        this.scrollToBottom();
-    }
-
-    componentDidMount() {
+    componentDidUpdate() {
         this.scrollToBottom();
     }
 
     handleSendMessage = () => {
-        this.props.sendMessage(this.props.chatId, this.state.message);
+        const data = {author: '2', text: this.state.message, chat: this.props.chatId};
+        this.props.createMessage(data);
         this.setState({message: ''});
-    };
-
-    handleReply = () => {
-        this.props.replyMessage(this.props.chatId);
     };
 
     handleInput = (e) => {
@@ -70,15 +50,17 @@ class MessageField extends React.Component {
     };
     
     render() {
-        let messageComponents = [];
-        if (this.props.messages.hasOwnProperty(this.props.chatId)) {
-            messageComponents = this.props.messages[this.props.chatId].map((message, index) =>
-                <Message
-                    key={index}
-                    text={message.text}
-                    sender={message.sender}
-                />
-            );
+        const messages = this.props.chatsList[this.props.chatId] ? this.props.chatsList[this.props.chatId].messages : [];
+        let messageComponents = messages.map((message, index) =>
+            <Message
+                key={index}
+                text={message.text}
+                sender={message.author}
+            />
+        );
+
+        if (this.props.isLoading) {
+            return <div>Загрузка...</div>;
         }
 
         return (
@@ -86,7 +68,7 @@ class MessageField extends React.Component {
                 <div className="messages-block__container" style={{clear: 'both' }}>
                     <div className="messages-block__message-field">
                         { messageComponents }
-                        <div className="scroll" ref={(el) => {this.messagesEnd = el;}}></div>
+                        <span className="scroll" ref={(el) => {this.messagesEnd = el;}}></span>
                     </div>
                 </div>
                 <div className='messages-block__input-field' style={{ textAlign: 'center' }}>
@@ -109,10 +91,11 @@ class MessageField extends React.Component {
     }
 }
 
-const mapStateToProps = ({ messageReducer }) => ({
-    messages: messageReducer.messages,
+const mapStateToProps = ({ chatsReducer }) => ({
+    chatsList: chatsReducer.chatsList,
+    isLoading: chatsReducer.isLoading
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators({ sendMessage, replyMessage, initStore }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ createMessage }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(MessageField);

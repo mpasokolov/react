@@ -14,9 +14,9 @@ class Message extends React.Component {
 
     render() {
         return (
-            <div className={ this.props.sender === 'bot' ? 'message message_bot' : 'message message_my' }>
-                <div className={this.props.sender === 'bot' ? 'message__name message__name_bot' : 'message__name message__name_my'}>
-                    { this.props.sender === 'bot' ? 'bot' : this.props.user.firstName }
+            <div className={ this.props.sender === '1' ? 'message message_bot' : 'message message_my' }>
+                <div className={this.props.sender === '1' ? 'message__name message__name_bot' : 'message__name message__name_my'}>
+                    { this.props.sender === '1' ? 'bot' : this.props.user.firstName }
                 </div>
                 <div className='message__text'>{ this.props.text }</div>
             </div>
