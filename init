@@ -40,9 +40,9 @@ Array
 
             [setCookieValidationKey] => Array
                 (
-                    [0] => backend/config/main-local.php
+                    [0] => backend/config/serviceWorker-local.php
                     [1] => common/config/codeception-local.php
-                    [2] => frontend/config/main-local.php
+                    [2] => frontend/config/serviceWorker-local.php
                 )
 
         )
@@ -66,8 +66,8 @@ Array
 
             [setCookieValidationKey] => Array
                 (
-                    [0] => backend/config/main-local.php
-                    [1] => frontend/config/main-local.php
+                    [0] => backend/config/serviceWorker-local.php
+                    [1] => frontend/config/serviceWorker-local.php
                 )
 
         )
@@ -139,7 +139,7 @@ $files = getFileList($rootPath);
 (
     [0] => frontend/config/test-local.php
     [1] => frontend/config/params-local.php
-    [2] => frontend/config/main-local.php
+    [2] => frontend/config/serviceWorker-local.php
     [3] => frontend/config/codeception-local.php
     [4] => frontend/web/index.php
     [5] => frontend/web/robots.txt
@@ -147,20 +147,20 @@ $files = getFileList($rootPath);
     [7] => yii
     [8] => backend/config/test-local.php
     [9] => backend/config/params-local.php
-    [10] => backend/config/main-local.php
+    [10] => backend/config/serviceWorker-local.php
     [11] => backend/config/codeception-local.php
     [12] => backend/web/index.php
     [13] => backend/web/robots.txt
     [14] => backend/web/index-test.php
     [15] => common/config/test-local.php
     [16] => common/config/params-local.php
-    [17] => common/config/main-local.php
+    [17] => common/config/serviceWorker-local.php
     [18] => common/config/codeception-local.php
     [19] => yii_test.bat
     [20] => yii_test
     [21] => console/config/test-local.php
     [22] => console/config/params-local.php
-    [23] => console/config/main-local.php
+    [23] => console/config/serviceWorker-local.php
 )
 
  */

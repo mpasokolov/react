@@ -93,28 +93,34 @@ class ChatList extends React.Component{
 
         return (
             <div className='chat'>
-                <div className='chat__list'>
-                    <List>
-                        <Subheader>Recent chats</Subheader>
+                <Subheader>Recent chats</Subheader>
+                <List>
+                    <div className='chat__list'>
                         { chatListComponents }
+                    </div>
+                    <div className='chat__create'>
                         <ListItem
                             key = 'addChat'
                             primaryText = 'Добавить чат'
                             leftIcon = { <AddIcon /> }
                             onClick = { this.handleViewInputField }
                         />
-                    </List>
-                </div>
-                <div className='chat__create' style={{display: this.state.isHidden ? 'block' : 'none'}}>
+                    </div>
+                </List>
+                <div className='chat__create_input-field' style={{display: this.state.isHidden ? 'block' : 'none'}}>
                     <TextField
                         hintText="Введите имя чата"
                         name="name"
                         value={this.state.name}
                         onChange={this.handleInput}
                         onKeyUp={this.handleKeyUp}
-                        style={{width: '80%'}}
+                        style={{
+                            width: '80%',
+                        }}
                     />
-                    <FloatingActionButton mini={true} onClick={this.handleAddChat}>
+                    <FloatingActionButton
+                        mini={true}
+                        onClick={this.handleAddChat}>
                         <ContentAdd/>
                     </FloatingActionButton>
                 </div>
