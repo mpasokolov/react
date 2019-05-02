@@ -1,3 +1,9 @@
-import { schema } from 'normalizr';
+import {normalize, schema} from 'normalizr';
 
-export const chats = new schema.Entity('chats');
+export const getNormalizedData = (data)  => {
+    const newData = {chats: data};
+    const chats = new schema.Entity('chats');
+    const mySchema = { chats: [ chats ] };
+
+    return normalize(newData, mySchema);
+}

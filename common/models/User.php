@@ -8,37 +8,15 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
-class User extends ActiveRecord implements IdentityInterface
-{
-    public $password_repeat;
-    public $rememberMe;
-    public $authKey;
+class User extends ActiveRecord implements IdentityInterface {
 
     public static function tableName() {
         return 'users';
     }
 
-    public function attributeLabels() {
-        return [
-            'username' => 'Логин:',
-            'password' => 'Повторите пароль:',
-            'password_repeat' => 'Пароль:',
-            'email' => 'Email:'
-        ];
-    }
-
     public function rules() {
         return [
-            [['username', 'password', 'email', 'password_repeat'], 'required', 'message' => 'Поле не должно быть пустым!'],
-            ['username', 'string', 'max' => '45', 'message' => 'Недопустимый формат логина!'],
-            ['username', 'unique', 'targetClass' => User::class, 'targetAttribute' => 'username',
-                'message' => 'Пользователь с данным логином уже существует!'],
-            ['email', 'email'],
-            ['email', 'unique', 'targetClass' => User::class, 'targetAttribute' => 'email',
-                'message' => 'Пользователь с данным email уже зарегистрирован!'],
-            [['password', 'password_repeat'], 'string', 'max' => '255', 'message' => 'Недопустимый формат пароля!'],
-            ['password', 'compare', 'message' => 'Введенные пароли не совпадают!'],
-            ['rememberMe', 'boolean'],
+            [['login', 'password'], 'safe'],
         ];
     }
 
@@ -52,7 +30,7 @@ class User extends ActiveRecord implements IdentityInterface
      * {@inheritdoc}
      */
     public static function findIdentity($id) {
-        return static ::findOne($id);
+        return static::findOne($id);
     }
 
     /**
@@ -60,7 +38,9 @@ class User extends ActiveRecord implements IdentityInterface
      * @throws Exception
      */
     public static function findIdentityByAccessToken($token, $type = null) {
-        return static::findOne(['access_token' => $token]);
+        $userId = $token -> getClaim('uid');
+
+        return static::findOne(['id' => $userId]);
     }
 
     /**
@@ -70,7 +50,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @return static|null
      */
     public static function findByUsername($username) {
-        return static ::findOne(['username' => $username]);
+        return static::findOne(['login' => $username]);
     }
 
     /**
@@ -84,7 +64,7 @@ class User extends ActiveRecord implements IdentityInterface
      * {@inheritdoc}
      */
     public function getAuthKey() {
-        return $this -> authKey;
+        return $this -> access_token;
     }
 
     /**
@@ -109,10 +89,10 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     public function beforeSave($insert) {
-        if (parent::beforeSave($insert)) {
+        if (parent ::beforeSave($insert)) {
             $this -> password = \Yii::$app -> security -> generatePasswordHash($this -> password);
             if ($this -> isNewRecord) {
-                $this -> access_token = \Yii::$app ->security-> generateRandomString();
+                $this -> access_token = \Yii::$app -> security -> generateRandomString();
             }
             return true;
         } else {
@@ -121,10 +101,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     public function setName($name) {
-        $this -> username  = $name;
-    }
-
-    public function getTeams() {
-        return $this -> hasMany(UsersTeams::class, ['id_user' => 'id']);
+        $this -> username = $name;
     }
 }

@@ -7,13 +7,13 @@ import { push } from 'react-router-redux';
 import Subheader from 'material-ui/Subheader';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import PropTypes from 'prop-types';
-import {bindActionCreators} from 'redux';
+import { bindActionCreators } from 'redux';
 import { createChat, loadChats } from '../actions/chatsActions';
 import connect from 'react-redux/es/connect/connect';
 import TextField from 'material-ui/TextField';
 import '../../css/chatList.sass';
 
-class ChatList extends React.Component{
+class ChatList extends React.Component {
 
     static propTypes = {
         chatsList: PropTypes.object,
@@ -67,10 +67,6 @@ class ChatList extends React.Component{
         if (this.props.isLoading) {
             return '';
         }
-
-        //console.log('is lite = ' + this.props.isLiteChat);
-        //console.log('type = ' + typeof(this.props.isLiteChat);
-
 
         let chatListComponents = [];
         for (let key in this.props.chatsList) {

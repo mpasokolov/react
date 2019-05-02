@@ -23,7 +23,8 @@
         "sonko-dmitry/yii2-telegram-bot-api": "*",
         "opw/yii2-react": "dev-master",
         "ext-curl": "*",
-      "ext-calendar": "*"
+      "ext-calendar": "*",
+        "sizeg/yii2-jwt": "^1.2"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

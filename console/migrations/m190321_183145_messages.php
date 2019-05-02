@@ -11,6 +11,7 @@ class m190321_183145_messages extends Migration
         $this -> createTable('messages', [
             'id' => $this -> primaryKey(),
             'author' => $this -> string(100) -> notNull(),
+            'author_login' => $this -> string(100) -> notNull(),
             'text' => $this -> text() -> notNull(),
             'chat' => $this -> integer() -> notNull(),
             'created_at' => $this -> integer(10) -> notNull(),

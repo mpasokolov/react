@@ -11,3 +11,10 @@ export const lastNameEdit = (name) => ({
     type: CHANGE_LAST_NAME,
     name,
 });
+
+export const GET_USER_DATA_FROM_JWT_TOKEN = '@@user/GET_USER_DATA_FROM_JWT_TOKEN';
+
+export const getDataFromJWTToken = (data) => ({
+    type: GET_USER_DATA_FROM_JWT_TOKEN,
+    data,
+});

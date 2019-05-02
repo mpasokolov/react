@@ -7,16 +7,31 @@ import connect from 'react-redux/es/connect/connect';
 class Message extends React.Component {
 
     static propTypes = {
-        sender: PropTypes.string.isRequired,
+        author_login: PropTypes.string.isRequired,
         text: PropTypes.string.isRequired,
-        user: PropTypes.object
+        user: PropTypes.string
     };
 
     render() {
+        console.log(this.props.author_login);
+        console.log(this.props.user);
         return (
-            <div className={ this.props.sender === '1' ? 'message message_bot' : 'message message_my' }>
-                <div className={this.props.sender === '1' ? 'message__name message__name_bot' : 'message__name message__name_my'}>
-                    { this.props.sender === '1' ? 'bot' : this.props.user.firstName }
+            <div className = {
+                this.props.author_login !==  this.props.user.login
+                    ? 'message message_bot'
+                    : 'message message_my'
+            }>
+                <div className = {
+                    this.props.author_login !==  this.props.user.login
+                        ? 'message__name message__name_bot'
+                        : 'message__name message__name_my'
+                }>
+                    {
+                        // this.props.author_login === this.props.user.login
+                        //     ? this.props.user.login
+                        //     :
+                        this.props.author_login
+                    }
                 </div>
                 <div className='message__text'>{ this.props.text }</div>
             </div>

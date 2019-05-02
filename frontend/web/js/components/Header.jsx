@@ -12,9 +12,11 @@ class Header extends React.Component{
 
     static propTypes = {
         chatId: PropTypes.string,
+        defaultChat: PropTypes.number,
         chats: PropTypes.object,
         push: PropTypes.func.isRequired,
-        isLoading: PropTypes.bool
+        isLoading: PropTypes.bool,
+        emptyChatList: PropTypes.bool
     };
 
     handleLink = (link) => {
@@ -26,20 +28,21 @@ class Header extends React.Component{
             return '';
         }
 
+        const chatId = this.props.chatId || this.props.defaultChat;
         return (
             <div className='header'>
                 <div className='header__chat-name'>
                     {
-                        typeof(this.props.chats[this.props.chatId]) !== 'undefined'
-                            ? this.props.chats[this.props.chatId].name
-                            : 'Идет загрузка'
+                        !this.props.emptyChatList
+                            ? this.props.chats[chatId].name
+                            : ''
                     }
                 </div>
                 <div className='header__message-count'>
-                    Messages: {
-                        typeof(this.props.chats[this.props.chatId]) !== 'undefined'
-                            ? this.props.chats[this.props.chatId].messages.length
-                            : 0
+                    {
+                        !this.props.emptyChatList
+                            ? 'Messages:' + this.props.chats[chatId].messages.length
+                            : ''
                     }
                 </div>
                 <div className='header__profile'>
@@ -55,6 +58,8 @@ class Header extends React.Component{
 
 const mapStateToProps = ({chatsReducer }) => ({
     chats: chatsReducer.chatsList,
+    defaultChat: chatsReducer.defaultChat,
+    emptyChatList: chatsReducer.emptyChatList,
     isLoading: chatsReducer.isLoading
 });
 

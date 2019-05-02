@@ -1,8 +1,12 @@
 import update from 'react-addons-update';
-import { CHANGE_FIRST_NAME, CHANGE_LAST_NAME } from '../actions/usersActions';
+import {
+    CHANGE_FIRST_NAME,
+    CHANGE_LAST_NAME,
+    GET_USER_DATA_FROM_JWT_TOKEN
+} from '../actions/usersActions';
 
 const initialStore = {
-    user: {firstName: 'Андрей', lastName: 'Соколов'},
+    user: undefined,
 };
 
 export default function usersReducer(store = initialStore, action) {
@@ -19,6 +23,11 @@ export default function usersReducer(store = initialStore, action) {
         newUser.lastName = action.name;
         return update(store, {
             user: {$set: newUser},
+        });
+    }
+    case GET_USER_DATA_FROM_JWT_TOKEN: {
+        return update(store, {
+            user: {$set: action.data.user}
         });
     }
     default:

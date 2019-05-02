@@ -1,6 +1,5 @@
 import { CALL_API, getJSON } from 'redux-api-middleware';
-import { chats } from '../utils/shema';
-import { normalize } from 'normalizr';
+import { getNormalizedData } from '../utils/shema';
 
 export const START_CHATS_LOADING = '@@chats/START_CHATS_LOADING';
 export const SUCCESS_CHATS_LOADING = '@@chats/SUCCESS_CHATS_LOADING';
@@ -16,7 +15,7 @@ export const loadChats = () => ({
             {
                 type: SUCCESS_CHATS_LOADING,
                 payload: (action, state, res) => getJSON(res).then(
-                    json => normalize(json, [chats])
+                    json => getNormalizedData(json)
                 ),
             },
             ERROR_CHATS_LOADING,
@@ -76,6 +75,13 @@ export const createMessage = (data) => ({
             ERROR_MESSAGE_UPLOADING,
         ],
     },
+});
+
+export const ADD_MESSAGE = '@@message/ADD_MESSAGE';
+
+export const addMessage = (data) => ({
+    type: ADD_MESSAGE,
+    data
 });
 
 export const LITE_ON_CHAT = '@@message/LITE_ON_CHAT';

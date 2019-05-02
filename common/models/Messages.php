@@ -21,7 +21,7 @@ class Messages extends ActiveRecord
 
     public function rules() {
         return [
-            [['author', 'text', 'chat'], 'safe'],
+            [['author', 'author_login', 'text', 'chat'], 'safe'],
         ];
     }
 }

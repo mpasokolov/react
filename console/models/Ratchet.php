@@ -17,18 +17,19 @@ class Ratchet extends Model implements MessageComponentInterface {
 
         $queryString = $conn -> httpRequest -> getUri() -> getQuery();
         $data = explode('=', $queryString);
+        //var_dump($conn);
         $room = $data[1];
 
         $this -> clients[$room][] = $conn;
-
-        var_dump($this->clients[$room]);
-
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
         $data = Json::decode($msg);
-        foreach ($this -> clients[$data['room']] as $user) {
+        //var_dump($data);
+        foreach ($this -> clients[$data['chat']] as $user) {
             if ($from !== $user) {
+                //var_dump($user);
+                var_dump($msg);
                 // The sender is not the receiver, send to each client connected
                 $user -> send($msg);
             }

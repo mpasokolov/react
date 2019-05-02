@@ -49,10 +49,14 @@ return [
             'rules' => [
                 [
                     'class' => \yii\rest\UrlRule::class,
-                    'controller' => ['v1/chats', 'v1/messages'],
+                    'controller' => ['v1/chats', 'v1/messages', 'v1/users'],
                 ]
             ],
-        ]
+        ],
+        'jwt' => [
+            'class' => 'sizeg\jwt\Jwt',
+            'key'   => '6dy4JHKUV6sEWmNtthvLZITsHCvBb6DO',
+        ],
     ],
     'params' => $params,
 ];

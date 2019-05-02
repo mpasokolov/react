@@ -25,7 +25,18 @@ class ChatsController extends ActiveController
 
     public function actionIndex() {
         $query = Chats::find()
-            -> with('messages');
+            ->orderBy(['id' => SORT_ASC])
+            ->with('messages');
+
+        return new ActiveDataProvider([
+            'query' => $query,
+        ]);
+    }
+
+    public function actionTest() {
+        $query = Chats::find()
+            ->orderBy(['id' => SORT_ASC])
+            ->with('messages');
 
         return new ActiveDataProvider([
             'query' => $query,

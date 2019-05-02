@@ -124,3 +124,7 @@ a.desc:after {
     color: red;
 }
 
+#root {
+    height: 100vh;
+}
+

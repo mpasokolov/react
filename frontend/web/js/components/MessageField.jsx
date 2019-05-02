@@ -6,16 +6,20 @@ import TextField from 'material-ui/TextField';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import SendIcon from 'material-ui/svg-icons/content/send';
 import Message from './Message';
-import { createMessage } from '../actions/chatsActions';
+import { createMessage, addMessage } from '../actions/chatsActions';
 import '../../css/messages.sass';
 
 class MessageField extends React.Component {
 
     static propTypes = {
-        chatId: PropTypes.string,
         chatsList: PropTypes.object,
+        chatId: PropTypes.number,
+        defaultChat: PropTypes.number,
         createMessage: PropTypes.func.isRequired,
-        isLoading: PropTypes.bool
+        addMessage: PropTypes.func.isRequired,
+        isLoading: PropTypes.bool,
+        emptyChatList: PropTypes.bool,
+        user: PropTypes.object
     };
 
     constructor(props) {
@@ -23,8 +27,18 @@ class MessageField extends React.Component {
         this.state = {
             message: '',
         };
+
+        this.socket = new WebSocket('ws://localhost:8080?chat=' + this.props.chatId);
+        this.socket.onmessage = event => {
+            this.handleNewMessage(JSON.parse(event.data));
+        };
+
+        window.addEventListener('beforeunload', () => {
+            this.socket.onclose = function () {}; // disable onclose handler first
+            this.socket.close();
+        });
     }
-    
+
     scrollToBottom = () => {
         this.messagesEnd.scrollIntoView({ behavior: 'smooth' });
     };
@@ -33,8 +47,13 @@ class MessageField extends React.Component {
         this.scrollToBottom();
     }
 
+    handleNewMessage = (message) => {
+        this.props.addMessage(message);
+    };
+
     handleSendMessage = () => {
-        const data = {author: '2', text: this.state.message, chat: this.props.chatId};
+        const data = {author: this.props.user.id ,author_login: this.props.user.login, text: this.state.message, chat: this.props.chatId};
+        this.socket.send(JSON.stringify(data));
         this.props.createMessage(data);
         this.setState({message: ''});
     };
@@ -50,52 +69,72 @@ class MessageField extends React.Component {
     };
     
     render() {
-        const messages = this.props.chatsList[this.props.chatId] ? this.props.chatsList[this.props.chatId].messages : [];
-        let messageComponents = messages.map((message, index) =>
-            <Message
-                key={index}
-                text={message.text}
-                sender={message.author}
-            />
-        );
+        let messageField;
+        if (this.props.emptyChatList) {
+            messageField = (
+                <React.Fragment>
+                    <div className="messages-block__message-field">
+                        <div>Чаты не найдены. Создайте чат для начала общения!</div>
+                        <span className="scroll" ref={(el) => {
+                            this.messagesEnd = el;
+                        }} />
+                    </div>
+                </React.Fragment>
+            );
+        } else {
+            const chatId = this.props.chatId || this.props.defaultChat;
+            const messages = this.props.chatsList[chatId] ? this.props.chatsList[chatId].messages : [];
+            let messageComponents = messages.map((message, index) =>
+                <Message
+                    key={index}
+                    text={message.text}
+                    author_login={message.author_login}
+                />
+            );
 
-        if (this.props.isLoading) {
-            return <div>Загрузка...</div>;
+            messageField = (
+                <React.Fragment>
+                    <div className="messages-block__container" style={{clear: 'both'}}>
+                        <div className="messages-block__message-field">
+                            {messageComponents}
+                            <span className="scroll" ref={(el) => {
+                                this.messagesEnd = el;
+                            }} />
+                        </div>
+                    </div>
+                    <div className='messages-block__input-field' style={{textAlign: 'center'}}>
+                        <TextField
+                            name="message"
+                            hintText="Hint Text"
+                            value={this.state.message}
+                            onChange={this.handleInput}
+                            onKeyUp={this.handleKeyUp}
+                        />
+                        <FloatingActionButton
+                            mini={true}
+                            style={{marginLeft: 20}}
+                            onClick={this.handleSendMessage}>
+                            <SendIcon/>
+                        </FloatingActionButton>
+                    </div>
+                </React.Fragment>
+            );
         }
 
         return (
-            <div className='messages-block'>
-                <div className="messages-block__container" style={{clear: 'both' }}>
-                    <div className="messages-block__message-field">
-                        { messageComponents }
-                        <span className="scroll" ref={(el) => {this.messagesEnd = el;}}></span>
-                    </div>
-                </div>
-                <div className='messages-block__input-field' style={{ textAlign: 'center' }}>
-                    <TextField
-                        name = "message"
-                        hintText = "Hint Text"
-                        value = { this.state.message }
-                        onChange = { this.handleInput }
-                        onKeyUp = { this.handleKeyUp }
-                    />
-                    <FloatingActionButton
-                        mini={ true }
-                        style={{ marginLeft: 20 }}
-                        onClick={ this.handleSendMessage }>
-                        <SendIcon />
-                    </FloatingActionButton>
-                </div>
-            </div>
+            messageField
         );
     }
 }
 
-const mapStateToProps = ({ chatsReducer }) => ({
+const mapStateToProps = ({ chatsReducer, usersReducer }) => ({
+    defaultChat: chatsReducer.defaultChat,
     chatsList: chatsReducer.chatsList,
-    isLoading: chatsReducer.isLoading
+    emptyChatList: chatsReducer.emptyChatList,
+    isLoading: chatsReducer.isLoading,
+    user: usersReducer.user
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators({ createMessage }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ addMessage, createMessage }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(MessageField);
